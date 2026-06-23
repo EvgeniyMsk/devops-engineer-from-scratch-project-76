@@ -1,5 +1,5 @@
 ANSIBLE_DIR := ansible
-ANSIBLE_PLAYBOOK := playbooks/playbook.yml
+ANSIBLE_PLAYBOOK := playbook.yml
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
@@ -14,4 +14,4 @@ galaxy: ## Установка ролей из requirements.yml
 	ansible-galaxy install -r requirements.yml -p $(ANSIBLE_DIR)/roles
 
 install: galaxy ## Установка Docker и pip на сервера
-	cd $(ANSIBLE_DIR) && ansible-playbook $(ANSIBLE_PLAYBOOK)
+	cd $(ANSIBLE_DIR) && ansible-playbook $(PWD)/$(ANSIBLE_PLAYBOOK)

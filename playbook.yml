@@ -1,0 +1,15 @@
+- hosts: all
+  vars:
+    pip_install_packages:
+      - name: docker
+  pre_tasks:
+    - name: Create docker user
+      user:
+        name: docker
+        state: present
+        groups: docker
+        append: true
+      
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
