@@ -3,6 +3,10 @@
     pip_install_packages:
       - name: docker
   pre_tasks:
+    - name: Create docker group
+      group:
+        name: docker
+        state: present
     - name: Create docker user
       user:
         name: docker
