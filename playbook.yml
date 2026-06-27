@@ -2,18 +2,59 @@
   vars:
     pip_install_packages:
       - name: docker
+
   pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_facts.os_family == 'Debian'
+
     - name: Create docker group
       group:
         name: docker
         state: present
+
     - name: Create docker user
       user:
         name: docker
         state: present
         groups: docker
         append: true
+
+
       
   roles:
     - geerlingguy.pip
     - geerlingguy.docker
+  
+  post_tasks:
+    - name: Ensure Redmine config directory exists
+      ansible.builtin.file:
+        path: /opt/redmine
+        state: directory
+        mode: "0755"
+      tags:
+        - redmine
+
+    - name: Copy Redmine env file to server
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/ansible/.env"
+        dest: /opt/redmine/.env
+        mode: "0600"
+      tags:
+        - redmine
+
+    - name: start Redmine docker container
+      community.docker.docker_container:
+        name: redmine
+        image: redmine:latest
+        state: started
+        env_file: /opt/redmine/.env
+        env:
+          REDMINE_DB_PASSWORD: "{{ vault_redmine_db_password }}"
+          REDMINE_SECRET_KEY_BASE: "{{ vault_redmine_secret_key_base }}"
+        ports:
+          - "{{ redmine_port }}:3000"
+      tags:
+        - redmine
