@@ -2,6 +2,7 @@ resource "yandex_vpc_security_group" "task6_alb_security_group" {
   name        = "task6-alb-security-group"
   description = "Task6 ALB security group for task6 project [Hexlet]"
   network_id  = yandex_vpc_network.task6_network.id
+  folder_id = var.folder_id
   labels = {
     environment = "production"
   }
@@ -35,6 +36,7 @@ resource "yandex_vpc_security_group" "task6_vm_security_group" {
   name        = "task6-vm-security-group"
   description = "Task6 VM security group for task6 project [Hexlet]"
   network_id  = yandex_vpc_network.task6_network.id
+  folder_id = var.folder_id
   labels = {
     environment = "production"
   }

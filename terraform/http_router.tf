@@ -1,5 +1,6 @@
 resource "yandex_alb_http_router" "task6_http_router" {
   name          = "task6-http-router"
+  folder_id = var.folder_id
   labels        = {
     environment = "production"
   }
@@ -8,7 +9,7 @@ resource "yandex_alb_http_router" "task6_http_router" {
 resource "yandex_alb_virtual_host" "task6_virtual_host" {
   name           = "task6-virtual-host"
   http_router_id = yandex_alb_http_router.task6_http_router.id
-
+  
   rate_limit {
     all_requests {
       per_second = 100

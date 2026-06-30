@@ -1,6 +1,7 @@
 resource "yandex_vpc_network" "task6_network" {
   name        = "task6_network-network"
   description = "Network for task6 project [Hexlet]"
+  folder_id = var.folder_id
   labels = {
     environment = "production"
   }
@@ -10,6 +11,7 @@ resource "yandex_vpc_subnet" "task6_subnet" {
   name           = "task6-subnet"
   v4_cidr_blocks = ["10.2.0.0/16"]
   description    = "Subnet for task6 project [Hexlet]"
+  folder_id = var.folder_id
   labels = {
     environment = "production"
   }
@@ -21,10 +23,10 @@ resource "yandex_vpc_subnet" "task6_subnet" {
 resource "yandex_vpc_gateway" "task6_nat_gateway" {
   name      = "nat-gateway"
   folder_id = var.folder_id
+  description = "NAT gateway for task6 project [Hexlet]"
   labels = {
     environment = "production"
   }
-  description = "NAT gateway for task6 project [Hexlet]"
   shared_egress_gateway {}
 }
 
