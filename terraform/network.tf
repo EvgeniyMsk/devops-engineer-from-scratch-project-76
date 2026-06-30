@@ -1,5 +1,5 @@
 resource "yandex_vpc_network" "task6_network" {
-  name        = "task6_network-network"
+  name        = "task6_network"
   description = "Network for task6 project [Hexlet]"
   folder_id = var.folder_id
   labels = {
