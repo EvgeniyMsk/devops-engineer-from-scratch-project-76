@@ -1,6 +1,4 @@
 - hosts: all
-  vars_files:
-    - "{{ playbook_dir }}/ansible/inventories/group_vars/all/vars.yml"
   vars:
     pip_install_packages:
       - name: docker
