@@ -1,0 +1,62 @@
+- hosts: all
+  vars:
+    pip_install_packages:
+      - name: docker
+
+  pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_facts.os_family == 'Debian'
+
+    - name: Create docker group
+      ansible.builtin.group:
+        name: docker
+        state: present
+
+    - name: Create docker user
+      ansible.builtin.user:
+        name: docker
+        state: present
+        groups: docker
+        append: true
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
+
+  post_tasks:
+    - name: Ensure Redmine config directory exists
+      ansible.builtin.file:
+        path: /opt/redmine
+        state: directory
+        mode: "0755"
+      tags:
+        - redmine
+
+    - name: Deploy Redmine env file from template
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/templates/.env.j2"
+        dest: /opt/redmine/.env
+        mode: "0600"
+      tags:
+        - redmine
+
+    - name: Start Redmine docker container
+      community.docker.docker_container:
+        name: redmine
+        image: redmine:latest
+        state: started
+        restart_policy: always
+        env_file: /opt/redmine/.env
+        ports:
+          - "{{ redmine_port }}:3000"
+      tags:
+        - redmine
+
+- hosts: webservers
+  roles:
+    - role: datadog.datadog
+      become: true
+  tags:
+    - datadog
